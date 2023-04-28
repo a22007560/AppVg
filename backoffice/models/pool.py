@@ -1,0 +1,28 @@
+from django.db import models
+
+from backoffice.models.quotation import Quotation
+
+
+class Pool(models.Model):
+    quotation = models.ForeignKey(Quotation, on_delete=models.CASCADE, related_name='pools')
+    length = models.DecimalField(max_digits=5, decimal_places=2)
+    width = models.DecimalField(max_digits=5, decimal_places=2)
+    min_depth = models.FloatField()
+    max_depth = models.FloatField()
+    volume = models.FloatField(blank=True, null=True)
+    surface_area = models.FloatField(blank=True, null=True)
+    circulation_type = models.CharField(max_length=50)
+
+    def save(self, *args, **kwargs):
+        if self.min_depth and self.max_depth:
+            self.volume = self.calculate_volume()
+            self.surface_area = self.calculate_surface_area()
+        super().save(*args, **kwargs)
+
+    def calculate_volume(self):
+        surface_area = self.calculate_surface_area()
+        average_depth = (self.min_depth + self.max_depth) / 2
+        return surface_area * average_depth
+
+    def calculate_surface_area(self):
+        return self.length * self.width

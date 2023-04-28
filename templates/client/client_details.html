@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <h1>Client Details</h1>
+    <h2>{{ client.name }} - {{ client.fiscal_name }}</h2>
+    <p>Tax Number: {{ client.tax_number }}</p>
+    <p>Notes: {{ client.notes }}</p>
+
+    <h3>Addresses</h3>
+    <ul>
+        {% for address in client.address_set.all %}
+            <li>{{ address.street }} {{ address.number }}, {{ address.city }}, {{ address.postal_code }}</li>
+        {% endfor %}
+    </ul>
+
+    <h3>Contacts</h3>
+    <ul>
+        {% for contact in client.contact_set.all %}
+            <li>{{ contact.type }}: {{ contact.contact }}</li>
+        {% endfor %}
+    </ul>
+{% endblock %}
