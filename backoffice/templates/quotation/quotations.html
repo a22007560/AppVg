@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block content %}
+
+    <h1>Orçamentos</h1>
+    <table class="table table-striped-columns table-hover">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Client</th>
+            <th>Address</th>
+            <th>Comments</th>
+            <th>Status</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for quotation in quotations %}
+            <tr style='cursor: pointer; cursor: hand;'
+                onclick="window.location='{% url 'quotation_details' quotation.id %}';">
+                <td>{{ quotation.quotation_id }}</td>
+                <td>{{ quotation.client }}</td>
+                <td>{{ quotation.pool }}</td>
+                <td>{{ quotation.comments }}</td>
+                {% if quotation.status == "draft" %}
+                    <td class="table-cell-blue">{{ quotation.status }}</td>
+                {% elif quotation.status == "sent" %}
+                    <td class="table-cell-yellow">{{ quotation.status }}</td>
+                {% elif quotation.status == "accepted" %}
+                    <td class="table-cell-green">{{ quotation.status }}</td>
+                {% elif quotation.status == "rejected" %}
+                    <td class="table-cell-red">{{ quotation.status }}</td>
+                {% endif %}
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+
+{% endblock %}

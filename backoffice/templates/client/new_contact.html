@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Novo Contacto</h1>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+
+        <button type="submit" class="btn btn-primary">Guardar</button>
+    </form>
+
+    <a href="{% url 'client_details' client_id=client.id %}">Voltar para Cliente</a>
+{% endblock %}

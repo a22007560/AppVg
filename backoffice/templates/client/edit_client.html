@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Edit Client</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Save" class="btn btn-primary">
+        <a href="{% url 'client_details' client_id=client.id %}" class="btn btn-secondary">Cancel</a>
+    </form>
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% load static %}
+<h1>Equipment List</h1>
+<div class="row">
+  {% for equipment in equipments %}
+  <div class="col-md-6">
+    <div class="card mb-3">
+      <div class="row g-0">
+        <div class="col-md-4">
+          <img src="/backoffice{{ equipment.image.url }}" class="img-fluid rounded-start" alt="{{ equipment.name }}">
+        </div>
+        <div class="col-md-8">
+          <div class="card-body">
+            <h2 class="card-title">{{ equipment.name }}</h2>
+            <p class="card-text">{{ equipment.description }}</p>
+            <p class="card-text">Preço: {{ equipment.price }}€</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}

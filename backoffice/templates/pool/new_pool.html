@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Add Pool</h1>
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-group">
+            {{ form.address.label_tag }}
+            {{ form.address }}
+        </div>
+        <div class="form-group">
+            {{ form.length.label_tag }}
+            {{ form.length }}
+        </div>
+        <div class="form-group">
+            {{ form.width.label_tag }}
+            {{ form.width }}
+        </div>
+        <div class="form-group">
+            {{ form.min_depth.label_tag }}
+            {{ form.min_depth }}
+        </div>
+        <div class="form-group">
+            {{ form.max_depth.label_tag }}
+            {{ form.max_depth }}
+        </div>
+        <div class="form-group">
+            {{ form.circulation_type.label_tag }}
+            {{ form.circulation_type }}
+        </div>
+        <button type="submit" class="btn btn-primary">Save</button>
+    </form>
+{% endblock %}

@@ -1,0 +1,172 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <div class="row align-items-center mb-3">
+        <div class="col">
+            <h1 class="mb-0">Detalhes do Cliente</h1>
+        </div>
+        <div class="col text-end">
+            <a href="{% url 'edit_client' client_id=client.id %}" class="btn btn-success float-right">Editar</a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <h2>{{ client.name }} - {{ client.fiscal_name }}</h2>
+            <p class="mb-2">NIF: {{ client.tax_number }}</p>
+            <p>Comentários: {{ client.notes }}</p>
+        </div>
+    </div>
+
+    <div class="row m-5">
+        <div class="d-flex justify-content-between">
+            <div class="">
+                <h3>Contactos</h3>
+            </div>
+            <div class="">
+                <a href="{% url 'new_contact_client' client_id=client.id %}" class="btn btn-success float-right">Adicionar
+                    Contacto</a>
+            </div>
+        </div>
+        <table class="table table-striped table-bordered table-hover">
+            <thead>
+            <tr>
+                <th>Tipo</th>
+                <th>Contacto</th>
+                <th>Comentários</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for contact in client.contact_set.all %}
+                <tr>
+                    <td>{{ contact.type }}</td>
+                    <td>{{ contact.contact }}</td>
+                    <td>{{ contact.notes }}</td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="2">Não existem contactos.</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="row m-5">
+        <div class="d-flex justify-content-between">
+            <div>
+                <h3>Moradas</h3>
+            </div>
+            <div>
+                <a href="{% url 'new_address_client' client_id=client.id %}" class="btn btn-success float-right">Adicionar
+                    Morada</a>
+            </div>
+        </div>
+        <table class="table table-striped table-bordered table-hover">
+            <thead>
+            <tr>
+                <th>Morada</th>
+                <th>Coordenadas</th>
+                <th>Comentários</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for address in addresses %}
+                <tr>
+                    <td>{{ address }}</td>
+                    <td>{{ address.coordinate_x }}, {{ address.coordinate_y }}</td>
+                    <td>{{ address.notes }}</td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="3">Não existem contactos.</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="row m-5">
+        <div class="d-flex justify-content-between">
+            <div>
+                <h3>Piscinas</h3>
+            </div>
+            <div>
+                <a href="{% url 'new_pool_client' client_id=client.id %}" class="btn btn-success float-right">Adicionar
+                    Piscina</a>
+
+            </div>
+        </div>
+        <table class="table table-striped table-bordered table-hover">
+            <thead>
+            <tr>
+                <th>Morada</th>
+                <th>Comprimento</th>
+                <th>Largura</th>
+                <th>Profundidade Mínima</th>
+                <th>Profundidade Máxima</th>
+                <th>Tipo de Circulação</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for pool in pools %}
+                <tr>
+                    <td>{{ pool.address }}</td>
+                    <td>{{ pool.length }}</td>
+                    <td>{{ pool.width }}</td>
+                    <td>{{ pool.min_depth }}</td>
+                    <td>{{ pool.max_depth }}</td>
+                    <td>{{ pool.circulation_type }}</td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="6">No pools found.</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="row m-5">
+        <div class="d-flex justify-content-between">
+            <div>
+                <h3>Propostas</h3>
+            </div>
+            <div>
+                <a href="{% url 'new_quotation' client_id=client.id %}" class="btn btn-success float-right">Criar
+                    Proposta</a>
+            </div>
+        </div>
+        <table class="table table-striped table-bordered table-hover">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Client</th>
+                <th>Address</th>
+                <th>Comments</th>
+                <th>Status</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for quotation in client.quotation_set.all %}
+                <tr>
+                    <td><a href="{% url 'quotation_details' quotation.id %}">{{ quotation.id }}</a></td>
+                    <td>{{ quotation.client }}</td>
+                    <td>{{ quotation.pool }}</td>
+                    <td>{{ quotation.comments }}</td>
+                    {% if quotation.status == "draft" %}
+                        <td class="table-cell-blue">{{ quotation.status }}</td>
+                    {% elif quotation.status == "sent" %}
+                        <td class="table-cell-yellow">{{ quotation.status }}</td>
+                    {% elif quotation.status == "approved" %}
+                        <td class="table-cell-green">{{ quotation.status }}</td>
+                    {% elif quotation.status == "rejected" %}
+                        <td class="table-cell-red">{{ quotation.status }}</td>
+                    {% endif %}
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+{% endblock %}

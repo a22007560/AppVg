@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="container my-4">
+        <div class="row">
+            <div class="col">
+                <a href="{% url 'edit_quotation' quotation.id %}" class="btn btn-primary">Edit</a>
+                <a href="{% url 'quotation_delete' quotation.id %}" class="btn btn-danger">Eliminar</a>
+                <h1>Quotation Details</h1>
+                <table class="table table-bordered">
+                    <tbody>
+                    <tr>
+                        <th>Quotation Type</th>
+                        <td>{{ quotation.quotation_type }}</td>
+                    </tr>
+                    <tr>
+                        <th>Client</th>
+                        <td>{{ quotation.client }}</td>
+                    </tr>
+                    <tr>
+                        <th>Client Address</th>
+                        <td>{{ quotation.client_address }}</td>
+                    </tr>
+                    <tr>
+                        <th>Client Phone</th>
+                        <td>{{ quotation.client_phone }}</td>
+                    </tr>
+                    <tr>
+                        <th>Client Email</th>
+                        <td>{{ quotation.client_email }}</td>
+                    </tr>
+                    <tr>
+                        <th>Equipments</th>
+                        <td>
+                            {% for equipment in quotation.equipments.all %}
+                                {{ equipment.name }}
+                            {% endfor %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Pool</th>
+                        <td>{{ quotation.pool }}</td>
+                    </tr>
+                    <tr>
+                        <th>Date</th>
+                        <td>{{ quotation.date }}</td>
+                    </tr>
+                    <tr>
+                        <th>Date Created</th>
+                        <td>{{ quotation.date_created }}</td>
+                    </tr>
+                    <tr>
+                        <th>Date Updated</th>
+                        <td>{{ quotation.date_updated }}</td>
+                    </tr>
+                    <tr>
+                        <th>Greetings</th>
+                        <td>{{ quotation.greetings }}</td>
+                    </tr>
+                    <tr>
+                        <th>Extra Recommendations</th>
+                        <td>
+                            {% for equipment in quotation.extra_recommendations.all %}
+                                {{ equipment.name }}
+                            {% endfor %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Comments</th>
+                        <td>{{ quotation.comments }}</td>
+                    </tr>
+                    <tr>
+                        <th>Status</th>
+                        <td>{{ quotation.status }}</td>
+                    </tr>
+                    </tbody>
+                </table>
+                <a href="{% url 'quotations' %}" class="btn btn-primary">Back to Quotation List</a>
+            </div>
+        </div>
+    </div>
+    <a href="{% url 'print_quotation' quotation.id %}" class="btn btn-primary" target="_blank">Imprimir</a>
+
+{% endblock %}

@@ -32,3 +32,11 @@ def client_details(request, client_id):
     return render(request, 'client/client_details.html', context)
 
 
+def edit_client(request, client_id):
+    client = get_object_or_404(Client, id=client_id)
+    context = {
+        'client': client,
+    }
+    return render(request, 'client/edit_client.html', context)
+
+
