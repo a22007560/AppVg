@@ -26,8 +26,18 @@ def new_client(request):
 
 def client_details(request, client_id):
     client = get_object_or_404(Client, id=client_id)
+    addresses = client.address_set.all()
+    quotations = client.quotation_set.all()
+    pools = []
+    for address in addresses:
+        for pool in address.pools.all():
+            pools.append(pool)
+
     context = {
         'client': client,
+        'addresses': addresses,
+        'quotations': quotations,
+        'pools': pools
     }
     return render(request, 'client/client_details.html', context)
 

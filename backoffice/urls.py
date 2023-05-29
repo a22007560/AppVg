@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.auth.decorators import login_required
-from django.urls import path
+from django.urls import path, include
 from django.contrib.auth import views as auth_views
 from .views import views, quotation_views, client_views, equipment_views, pool_views, address_views, contact_views, \
     user_views
@@ -19,6 +19,7 @@ urlpatterns = [
 
     path('equipments/', login_required(equipment_views.equipments), name='equipments'),
     path('new_equipment/', login_required(equipment_views.new_equipment), name='new_equipment'),
+    path('equipments/<int:equipment_id>/edit', login_required(equipment_views.edit_equipment), name='edit_equipment'),
 
     path('quotations/', login_required(quotation_views.quotations), name='quotations'),
     path('new_quotation/<int:client_id>', login_required(quotation_views.new_quotation), name='new_quotation'),

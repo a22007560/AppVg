@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'AppVg',
     'bootstrap5',
     'bootstrap_datepicker_plus',
+    'django_select2',
+
 ]
 
 MIDDLEWARE = [

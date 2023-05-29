@@ -12,6 +12,17 @@
         <a href="{% url 'new_pool_client' client_id=client.id %}" class="btn btn-primary float-right">Add new pool</a>
         {% bootstrap_form form %}
 
-        <button type="submit" class="btn btn-primary">Submit</button>
+        <button type="submit" class="btn btn-primary">Guardar</button>
     </form>
+
+    <script>
+        $(document).ready(function () {
+            $("select[name='equipments']").select2();
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            $("select[name='extra_recommendations']").select2();
+        });
+    </script>
 {% endblock %}

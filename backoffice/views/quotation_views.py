@@ -1,5 +1,6 @@
 import datetime
 import io
+import os
 
 from django.shortcuts import render, redirect, get_object_or_404
 from reportlab.lib import colors
@@ -9,6 +10,7 @@ from reportlab.lib.units import cm, inch, mm
 from reportlab.lib.utils import ImageReader
 
 from AppVg import settings
+from AppVg.settings import MEDIA_BASE_DIR
 from backoffice.models.client import Client
 from backoffice.models.pool import Pool
 from backoffice.models.quotation import Quotation
@@ -17,6 +19,7 @@ from django.http import HttpResponse
 from reportlab.lib.pagesizes import letter, A4, portrait
 from reportlab.pdfgen import canvas
 from reportlab.platypus import Table, TableStyle, Image, SimpleDocTemplate, Paragraph
+from PIL import Image
 
 from backoffice.forms import QuotationForm
 
@@ -46,7 +49,7 @@ def new_quotation(request, client_id):
 
 def edit_quotation(request, quotation_id):
     quotation = get_object_or_404(Quotation, id=quotation_id)
-    client = get_object_or_404(Client, id=quotation.client.id)
+    client = quotation.client
 
     if request.method == 'POST':
         form = QuotationForm(request.POST, instance=quotation, client=client, quotation=quotation)
@@ -219,7 +222,7 @@ def print_quotation(request, quotation_id):
 
     # --------------------- EQUIPMENT ---------------------------
     p.drawString(60, 750, "Fornecimento de Equipamento")
-    y = 700  # Initial y-coordinate
+    y = 650  # Initial y-coordinate
     line_height = 15
     max_y = 100  # Maximum y-coordinate before starting a new page
 
@@ -227,10 +230,20 @@ def print_quotation(request, quotation_id):
         # Retrieve the equipment details
         name = equipment.name
         description = equipment.description
-        price = equipment.price
-        equip_img = ImageReader(f'backoffice/{equipment.image.url}')
-        img_width = equip_img.getWidth() * max_img_height / equip_img.getHeight()
+        equip_img_path = os.path.join(MEDIA_BASE_DIR, equipment.image.name)
+        desired_height = 100
 
+        with Image.open(equip_img_path) as img:
+            # Calculate the desired width while maintaining the aspect ratio
+            original_width, original_height = img.size
+            aspect_ratio = original_width / original_height
+            desired_width = desired_height * aspect_ratio
+
+            # Resize the image with the calculated width and height
+            img = img.resize((int(desired_width), desired_height), Image.ANTIALIAS)
+
+            # Convert the PIL image to the ReportLab-compatible ImageReader format
+            equip_img = ImageReader(img)
         # Check if there is enough space on the page for the next item
         if y < max_y:
             # Start a new page
@@ -238,12 +251,12 @@ def print_quotation(request, quotation_id):
             y = 700
 
         # Write the equipment details to the PDF
-        p.drawImage(equip_img, 100, y)
+        p.drawImage(equip_img, 100, y-50, height=100)
         p.drawString(250, y, f'Name: {name}')
         p.drawString(250, y - line_height, f'Description: {description}')
 
         # Update the y-coordinate for the next equipment
-        y -= line_height * 3
+        y -= line_height * 8
 
     # --------------------- FOOTER ---------------------------
     p.drawImage(footer_img, 40, 40, width=footer_img_size, height=footer_img_size)

@@ -148,7 +148,7 @@
             </tr>
             </thead>
             <tbody>
-            {% for quotation in client.quotation_set.all %}
+            {% for quotation in quotations %}
                 <tr>
                     <td><a href="{% url 'quotation_details' quotation.id %}">{{ quotation.id }}</a></td>
                     <td>{{ quotation.client }}</td>

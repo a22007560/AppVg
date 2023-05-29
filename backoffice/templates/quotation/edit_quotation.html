@@ -1,10 +1,25 @@
 {% extends 'base.html' %}
+{% load bootstrap5 %}
+{% bootstrap_css %}
+{% bootstrap_javascript %}
 
 {% block content %}
+    {{ form.media }}
     <h1>Edit Quotation</h1>
     <form method="post">
         {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Save</button>
+        {% bootstrap_form form %}
+        <button type="submit" class="btn btn-primary">Guardar</button>
     </form>
+
+    <script>
+        $(document).ready(function () {
+            $("select[name='equipments']").select2();
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            $("select[name='extra_recommendations']").select2();
+        });
+    </script>
 {% endblock %}

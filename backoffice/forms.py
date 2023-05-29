@@ -7,10 +7,10 @@ from backoffice.models.client import Client, Address, Contact
 from backoffice.models.equipment import Equipment
 from backoffice.models.pool import Pool
 from backoffice.models.quotation import Quotation
+from django_select2 import forms as Select2Forms
 
 
 class ClientForm(forms.ModelForm):
-
     class Meta:
         model = Client
         fields = ['client', 'name', 'fiscal_name', 'tax_number', 'notes']
@@ -99,12 +99,16 @@ class PoolForm(forms.ModelForm):
 
 
 class QuotationForm(forms.ModelForm):
-    client_address = forms.ModelChoiceField(queryset=Address.objects.none(), widget=forms.Select(attrs={'class': 'form-select'}))
-    client_phone = forms.ModelChoiceField(queryset=Contact.objects.none(), widget=forms.Select(attrs={'class': 'form-select'}))
-    client_email = forms.ModelChoiceField(queryset=Contact.objects.none(), widget=forms.Select(attrs={'class': 'form-select'}))
-    equipments = forms.ModelMultipleChoiceField(queryset=Equipment.objects.all(), widget=CheckboxSelectMultiple)
+    """
+        client_address = forms.ModelChoiceField(queryset=Address.objects.none())
+        client_phone = forms.ModelChoiceField(queryset=Contact.objects.none())
+        client_email = forms.ModelChoiceField(queryset=Contact.objects.none())
+    """
+
+    equipments = forms.ModelMultipleChoiceField(queryset=Equipment.objects.all(),
+                                                widget=Select2Forms.Select2MultipleWidget)
     extra_recommendations = forms.ModelMultipleChoiceField(queryset=Equipment.objects.all(),
-                                                           widget=CheckboxSelectMultiple)
+                                                           widget=Select2Forms.Select2MultipleWidget)
     date = forms.DateField(widget=DatePickerInput())
 
     def __init__(self, *args, **kwargs):
@@ -113,15 +117,23 @@ class QuotationForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
 
         if client:
+            self.fields['client'].widget = forms.HiddenInput()
+            self.fields['client'].initial = client
+            self.initial['client'] = client
             self.fields['client_address'].queryset = Address.objects.filter(client=client)
             self.fields['client_phone'].queryset = Contact.objects.filter(client=client, type='phone')
             self.fields['client_email'].queryset = Contact.objects.filter(client=client, type='email')
-            self.fields['client'].widget = forms.HiddenInput()
-            self.fields['client'].initial = client
             self.fields['pool'].queryset = Pool.objects.filter(
                 address__in=Address.objects.filter(client=client)
             )
-            self.initial['client'] = client
+
+        if quotation:
+            self.fields['client_address'].queryset = Address.objects.filter(client=quotation.client)
+            self.fields['client_phone'].queryset = Contact.objects.filter(client=quotation.client, type='phone')
+            self.fields['client_email'].queryset = Contact.objects.filter(client=quotation.client, type='email')
+            self.initial['client_address'] = quotation.client_address
+            self.initial['client_phone'] = quotation.client_phone
+            self.initial['client_email'] = quotation.client_email
 
     def clean(self):
         cleaned_data = super().clean()
@@ -134,6 +146,5 @@ class QuotationForm(forms.ModelForm):
     class Meta:
         model = Quotation
         fields = ('quotation_type', 'client', 'client_address', 'client_phone', 'client_email', 'equipments', 'pool',
-                  'date', 'greetings', 'extra_recommendations', 'comments', 'transportation_fee', 'labor_rate', 'status')
-
-
+                  'date', 'greetings', 'extra_recommendations', 'comments', 'transportation_fee', 'labor_rate',
+                  'status')

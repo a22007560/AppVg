@@ -1,6 +1,11 @@
+import os
+import random
+
 from django.core.management.base import BaseCommand
 
-from backoffice.models import Client, Address, Contact
+from AppVg.settings import MEDIA_BASE_DIR
+from backoffice.models.client import Client, Address, Contact
+from backoffice.models.equipment import Equipment
 
 
 class Command(BaseCommand):
@@ -12,8 +17,8 @@ class Command(BaseCommand):
                                           postal_code='10001', coordinate_x=40.7128, coordinate_y=-74.0060)
         address2 = Address.objects.create(client=client1, street='456 Second St', number='2B', city='Los Angeles',
                                           postal_code='90012', coordinate_x=34.0522, coordinate_y=-118.2437)
-        contact1 = Contact.objects.create(client=client1, status='phone', contact='555-1234')
-        contact2 = Contact.objects.create(client=client1, status='email', contact='client1@example.com')
+        contact1 = Contact.objects.create(client=client1, type='phone', contact='555-1234')
+        contact2 = Contact.objects.create(client=client1, type='email', contact='client1@example.com')
 
         # Client 2
         client2 = Client.objects.create(
@@ -50,21 +55,21 @@ class Command(BaseCommand):
         # Contacts for Client 2
         contact2_1 = Contact.objects.create(
             client=client2,
-            status='phone',
+            type='phone',
             contact='919123456',
             notes='Notes for Phone Contact Two One'
         )
 
         contact2_2 = Contact.objects.create(
             client=client2,
-            status='phone',
+            type='phone',
             contact='913456789',
             notes='Notes for Phone Contact Two Two'
         )
 
         contact2_3 = Contact.objects.create(
             client=client2,
-            status='email',
+            type='email',
             contact='email2@example.com',
             notes='Notes for Email Contact Two One'
         )
@@ -104,14 +109,33 @@ class Command(BaseCommand):
         # Contacts for Client 3
         contact3_1 = Contact.objects.create(
             client=client3,
-            status='phone',
+            type='phone',
             contact='915123456',
             notes='Notes for Phone Contact Three One'
         )
 
         contact3_2 = Contact.objects.create(
             client=client3,
-            status='email',
+            type='email',
             contact='email3@example.com',
             notes='Notes for Email Contact Three One'
         )
+
+    example_names = ["Equipment 1", "Equipment 2", "Equipment 3", "Equipment 4", "Equipment 5"]
+    example_prices = [100, 200, 300, 400, 500]
+    example_descriptions = ["Description 1", "Description 2", "Description 3", "Description 4", "Description 5"]
+
+    # Iterate to create 5 equipment objects
+    for i in range(5):
+        # Generate random index to select name, price, and description from the example lists
+        random_index = random.randint(0, 4)
+
+        # Create the equipment object
+        equipment = Equipment()
+        equipment.name = example_names[random_index]
+        equipment.price = example_prices[random_index]
+        equipment.description = example_descriptions[random_index]
+        equipment.image = os.path.join(MEDIA_BASE_DIR, 'equipment/placeholder.png')  # Set the image to "placeholder.png"
+
+        # Save the equipment object
+        equipment.save()
